@@ -1,183 +1,102 @@
-# 📚 PDF RAG Chatbot
+# 📚 Chat with Your PDF — RAG Project
 
-An AI-powered PDF Question Answering Chatbot built using **Streamlit, Google Gemini API, FAISS, and Sentence Transformers**. Upload a PDF document and ask questions about its content in natural language.
+A Retrieval-Augmented Generation (RAG) application that lets users upload a PDF, search its contents using semantic embeddings, and ask questions answered by Google Gemini using retrieved passages.
 
-The chatbot retrieves relevant passages from the uploaded PDF and uses Gemini to generate concise, context-based answers with page references.
+## Features
 
-## ✨ Features
+- Upload a PDF through a Streamlit interface
+- Extract selectable text page by page using PyPDF
+- Split text into overlapping chunks
+- Create sentence embeddings with HuggingFace Sentence Transformers
+- Store and retrieve vectors with FAISS
+- Generate grounded answers using Gemini
+- Display source passages and PDF page numbers
+- Avoid making up answers when the retrieved context does not contain the information
 
-- 📄 **PDF Text Extraction** — Extracts text from PDF documents using PyPDF.
-- ✂️ **Text Chunking** — Splits extracted text into smaller, overlapping chunks.
-- 🧠 **Semantic Embeddings** — Converts text into vector representations using Sentence Transformers.
-- 🔎 **FAISS Vector Search** — Retrieves relevant passages based on the user's question.
-- 🤖 **AI-Powered Answers** — Uses the Google Gemini API to answer questions from retrieved PDF passages.
-- 📌 **Page References** — Includes relevant PDF page numbers in answers.
-- 🔄 **Error Handling** — Retries temporary Gemini API errors and supports model fallback.
-- 🌙 **Dark UI** — Provides a clean, dark-themed chat interface using Streamlit.
-
-## 🛠️ Tech Stack
-
-| Technology | Purpose |
-|---|---|
-| Python | Core programming language |
-| Streamlit | Web application interface |
-| Google Gemini API | AI-generated answers |
-| Sentence Transformers | Text embeddings |
-| FAISS | Vector similarity search |
-| PyPDF | PDF text extraction |
-| NumPy | Numerical and vector operations |
-
-## 📂 Project Structure
+## Project structure
 
 ```text
 PDF_RAG_Chatbot/
-│
-└── Chatbot/
-    ├── app.py
-    ├── main.py
-    ├── requirements.txt
-    ├── packages.txt
-    ├── README.md
-    ├── pdf_ocr_cache.json
-    └── .streamlit/
-        └── config.toml
+├── .streamlit/
+│   └── config.toml
+├── app.py
+├── main.py
+├── requirements.txt
+├── packages.txt
+├── .gitignore
+├── README.md
+└── pdf_ocr_cache.json
 ```
 
-*Note: Some files may differ depending on your local setup. Do not upload virtual environments, API keys, or other sensitive files to GitHub.*
+## Run locally
 
-## ⚙️ Installation and Setup
+### 1. Install Python
 
-### 1. Clone the Repository
+Use Python 3.10 or newer.
+
+### 2. Open the project folder in a terminal
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
-cd PDF_RAG_Chatbot/Chatbot
+cd PDF_RAG_Chatbot
 ```
 
-Replace `YOUR_GITHUB_REPOSITORY_URL` with your actual repository URL.
+### 3. Create and activate a virtual environment (recommended)
 
-### 2. Create a Virtual Environment
+Windows:
 
 ```bash
-python -m venv venv
+python -m venv .venv
+.venv\Scripts\activate
 ```
 
-Activate it on Windows:
+macOS/Linux:
 
 ```bash
-venv\Scripts\activate
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
-### 3. Install Dependencies
+### 4. Install dependencies
 
 ```bash
-python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-If PyTorch or torchvision installation fails, install compatible versions for your Python environment.
-
-### 4. Get a Gemini API Key
-
-1. Visit [Google AI Studio](https://aistudio.google.com/).
-2. Create or obtain a Gemini API key.
-3. Run the application and enter the key in the app's Settings section.
-
-**Security:** Never commit your API key to GitHub or include it in screenshots, source code, or public configuration files.
-
-### 5. Run the Application
+### 5. Start the app
 
 ```bash
 streamlit run app.py
 ```
 
-Streamlit will provide a local URL, usually:
+Open the local URL printed in the terminal (usually http://localhost:8501).
 
-```text
-http://localhost:8501
+## Gemini API key
+
+Get an API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+
+You can paste the key into the app's sidebar while testing locally. For deployment, create a Streamlit secret named `GEMINI_API_KEY`:
+
+```toml
+GEMINI_API_KEY = "paste-your-key-here"
 ```
 
-Open the URL in your browser to use the chatbot.
+Do not commit API keys or `.streamlit/secrets.toml` to GitHub.
 
-## 🚀 How It Works
+## Deploy on Streamlit Community Cloud
 
-The application follows a Retrieval-Augmented Generation (RAG) pipeline:
+1. Push this project to a GitHub repository.
+2. Sign in at [Streamlit Community Cloud](https://share.streamlit.io/).
+3. Choose **Create app** and select your repository.
+4. Set the main file path to `app.py`.
+5. In app settings, add `GEMINI_API_KEY` under Secrets.
+6. Deploy.
 
-1. **Upload PDF:** The user uploads a PDF document.
-2. **Text Extraction:** Text is extracted page by page.
-3. **Chunking:** The extracted text is divided into overlapping chunks.
-4. **Embedding Generation:** Sentence Transformers converts chunks into embeddings.
-5. **Vector Indexing:** FAISS stores the embeddings for similarity search.
-6. **Question Retrieval:** The user's question is embedded and matched against relevant PDF chunks.
-7. **Answer Generation:** Gemini receives the retrieved passages and the question.
-8. **Response Display:** The generated answer and relevant source information are returned to the user.
+The first deployment may take a few minutes because the embedding model is downloaded.
 
-```text
-PDF Upload
-    ↓
-Text Extraction
-    ↓
-Text Chunking
-    ↓
-Sentence Embeddings
-    ↓
-FAISS Vector Index
-    ↓
-Question Embedding
-    ↓
-Relevant Passage Retrieval
-    ↓
-Google Gemini API
-    ↓
-Answer with Page References
-```
+## Notes and limitations
 
-## 💬 Example Usage
-
-**Example question:**
-
-"What are the five main points discussed in this PDF?"
-
-**Expected workflow:**
-
-- Upload a PDF document.
-- Enter your question in the chat interface.
-- The application retrieves relevant passages.
-- Gemini generates an answer based on those passages.
-- Review the answer and cited page numbers against the original PDF.
-
-## ⚠️ Limitations
-
-- Scanned or image-only PDFs may require OCR before their text can be searched.
-- Answers depend on the quality of extracted text and retrieved passages.
-- Incorrect or incomplete retrieval can affect answer accuracy.
-- Gemini API availability, rate limits, and usage quotas may affect response generation.
-- API keys must be kept secure.
-
-Always verify important answers against the original document.
-
-## 🔮 Future Improvements
-
-- Support multiple PDF documents in one session.
-- Add OCR for scanned PDFs.
-- Store vector indexes for faster repeated queries.
-- Add chat history and conversation memory.
-- Improve source citations and passage highlighting.
-- Add support for additional language models.
-- Improve error handling, logging, and deployment configuration.
-
-## 🔐 Privacy and Security
-
-PDF content may be sent to the configured AI provider as part of answer generation. Avoid uploading confidential documents unless you are authorized to process them using the selected services.
-
-Never publish API keys, credentials, or private documents in a public repository.
-
-## 👨‍💻 Author
-
-**Bhavya Gupta**
-
-GitHub: (https://github.com/BhavyaGupta1017)
-
-## 📄 License
-
-This project is available under the MIT License if you choose to distribute it under that license. Add a `LICENSE` file containing the MIT License before claiming that the project is MIT-licensed.
+- This starter version processes one uploaded PDF at a time.
+- The PDF needs selectable text. Scanned/image-only PDFs require OCR first.
+- The FAISS index is held in session memory and is rebuilt when a PDF is processed.
+- Do not upload confidential documents to a public demo.
+- Gemini API usage may be subject to quotas and billing terms.
