@@ -174,9 +174,9 @@ Never publish API keys, credentials, or private documents in a public repository
 
 ## 👨‍💻 Author
 
-**Your Name**
+**Bhavya Gupta**
 
-GitHub: [Your GitHub Profile](https://github.com/)
+GitHub: (https://github.com/BhavyaGupta1017)
 
 ## 📄 License
 
